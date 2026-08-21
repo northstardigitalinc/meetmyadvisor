@@ -1,0 +1,1208 @@
+<title>Meet My Advisor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ─── Token System ─────────────────────────────────────────────────────────── */
+:root {
+  /* Brand */
+  --forest:       #043a00;
+  --forest-deep:  #021d00;
+  --forest-mid:   #0a5200;
+  --gold:         #c9a84c;
+  --gold-lt:      #e4cc82;
+  --gold-dk:      #9a7a28;
+  --ember:        #b91c1c;
+
+  /* Light theme surfaces */
+  --bg:           #ffffff;
+  --bg-alt:       #f3f7f1;   /* slight green bias — chosen, not default grey */
+  --text:         #1a2e18;
+  --text-2:       #4a6047;
+  --text-3:       #8aaa86;
+  --border:       rgba(4,58,0,0.1);
+  --border-gold:  rgba(201,168,76,0.25);
+
+  /* WM Watermelon UI shadow patterns */
+  --sh-icon:  inset 0 -2px 0.5px rgba(0,0,0,0), inset 0 2px 0 2px rgba(255,255,255,0.9),
+              0 0 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05);
+  --sh-card:  0 1px 3px rgba(4,58,0,0.05), 0 4px 16px rgba(4,58,0,0.07);
+  --sh-hover: 0 10px 30px rgba(4,58,0,0.14);
+  --sh-gold:  0 4px 16px rgba(201,168,76,0.35);
+
+  --r-card:   22px;
+  --r-icon:   9px;
+
+  --font-d: 'Cormorant Garant', Georgia, 'Times New Roman', serif;
+  --font-b: 'Inter', -apple-system, system-ui, sans-serif;
+}
+
+/* Dark mode ── properly guarded so system + explicit both work */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:       #0b1809;
+    --bg-alt:   #0f1e0c;
+    --text:     rgba(255,255,255,0.9);
+    --text-2:   rgba(255,255,255,0.55);
+    --text-3:   rgba(255,255,255,0.3);
+    --border:   rgba(255,255,255,0.08);
+    --sh-icon:  inset 0 -1px 0 rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.06),
+                0 0 3px rgba(0,0,0,0.2), 0 2px 6px rgba(0,0,0,0.1);
+    --sh-card:  0 1px 3px rgba(0,0,0,0.25), 0 4px 16px rgba(0,0,0,0.3);
+    --sh-hover: 0 10px 32px rgba(0,0,0,0.5);
+  }
+}
+:root[data-theme="dark"] {
+  --bg:       #0b1809;
+  --bg-alt:   #0f1e0c;
+  --text:     rgba(255,255,255,0.9);
+  --text-2:   rgba(255,255,255,0.55);
+  --text-3:   rgba(255,255,255,0.3);
+  --border:   rgba(255,255,255,0.08);
+  --sh-icon:  inset 0 -1px 0 rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.06),
+              0 0 3px rgba(0,0,0,0.2), 0 2px 6px rgba(0,0,0,0.1);
+  --sh-card:  0 1px 3px rgba(0,0,0,0.25), 0 4px 16px rgba(0,0,0,0.3);
+  --sh-hover: 0 10px 32px rgba(0,0,0,0.5);
+}
+
+/* ─── Reset ─────────────────────────────────────────────────────────────────  */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-b);
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+
+.w { max-width: 1140px; margin-inline: auto; padding-inline: 24px; }
+
+/* ─── TOP BAR ────────────────────────────────────────────────────────────── */
+.topbar {
+  background: var(--forest-deep);
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+  padding: 8px 0;
+}
+.topbar-inner {
+  max-width: 1140px; margin-inline: auto; padding-inline: 24px;
+  display: flex; justify-content: space-between;
+  align-items: center; flex-wrap: wrap; gap: 8px;
+}
+.topbar-left { display: flex; gap: 22px; flex-wrap: wrap; }
+.tb-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11.5px; font-weight: 400;
+  color: rgba(255,255,255,0.55); letter-spacing: 0.01em;
+}
+.tb-item svg { color: var(--gold); flex-shrink: 0; }
+.tb-item a { color: rgba(255,255,255,0.55); transition: color .15s; }
+.tb-item a:hover { color: var(--gold); }
+.topbar-social { display: flex; gap: 16px; }
+.topbar-social a {
+  font-size: 10.5px; font-weight: 600;
+  color: rgba(255,255,255,0.38);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  transition: color .15s;
+}
+.topbar-social a:hover { color: var(--gold); }
+
+/* ─── NAV ────────────────────────────────────────────────────────────────── */
+nav {
+  background: var(--forest);
+  position: sticky; top: 0; z-index: 100;
+  border-bottom: 2px solid rgba(201,168,76,0.35);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.25);
+}
+.nav-inner {
+  max-width: 1140px; margin-inline: auto; padding: 0 24px;
+  display: flex; align-items: center; height: 62px; gap: 20px;
+}
+.nav-brand {
+  display: flex; flex-direction: column;
+  line-height: 1.1; flex-shrink: 0; gap: 1px;
+}
+.nav-brand-name {
+  font-family: var(--font-d);
+  font-size: 18px; font-weight: 600;
+  color: var(--gold); letter-spacing: 0.03em;
+}
+.nav-brand-sub {
+  font-size: 9px; font-weight: 500;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase; letter-spacing: 0.16em;
+}
+.nav-links { display: flex; align-items: center; gap: 2px; margin-left: auto; }
+.nav-links a {
+  font-size: 13px; font-weight: 400;
+  color: rgba(255,255,255,0.75);
+  padding: 5px 12px; border-radius: 5px;
+  transition: color .15s, background .15s;
+}
+.nav-links a:hover { color: var(--gold); background: rgba(201,168,76,0.08); }
+.nav-cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--gold) !important; color: var(--forest-deep) !important;
+  font-weight: 600 !important; font-size: 12.5px !important;
+  padding: 7px 15px !important; border-radius: 6px !important;
+  margin-left: 8px; transition: background .15s !important;
+}
+.nav-cta:hover { background: var(--gold-lt) !important; }
+@media (max-width: 760px) { .nav-links { display: none; } }
+
+/* ─── HERO ────────────────────────────────────────────────────────────────── */
+.hero {
+  background: var(--forest);
+  position: relative; overflow: hidden;
+  padding: 100px 24px 92px;
+}
+/* Diagonal line texture — fine and subtle */
+.hero::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: repeating-linear-gradient(
+    -52deg,
+    transparent, transparent 52px,
+    rgba(201,168,76,0.022) 52px, rgba(201,168,76,0.022) 53px
+  );
+}
+/* Soft radial glow top-right */
+.hero::after {
+  content: '';
+  position: absolute; top: -140px; right: -140px;
+  width: 560px; height: 560px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-inner {
+  max-width: 1140px; margin-inline: auto;
+  display: grid; grid-template-columns: 1fr 390px;
+  gap: 60px; align-items: center;
+  position: relative; z-index: 1;
+}
+@media (max-width: 880px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-sidecard { display: none; }
+}
+
+/* Badge */
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.28);
+  border-radius: 100px; padding: 4px 12px 4px 8px;
+  margin-bottom: 22px;
+}
+.hero-badge-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 0 2px rgba(201,168,76,0.25);
+}
+.hero-badge-text {
+  font-size: 11px; font-weight: 600;
+  color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em;
+}
+
+/* Headline — editorial risk: large Cormorant with italic gold break */
+.hero h1 {
+  font-family: var(--font-d);
+  font-size: clamp(44px, 6.5vw, 76px);
+  font-weight: 700; color: #fff;
+  line-height: 1.04; letter-spacing: -0.015em;
+  text-wrap: balance; margin-bottom: 24px;
+}
+.hero h1 em {
+  font-style: italic; color: var(--gold);
+  font-weight: 600; display: block;
+}
+
+.hero-sub {
+  font-size: 16px; font-weight: 300;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.75; max-width: 480px; margin-bottom: 36px;
+}
+
+.hero-btns { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 52px; }
+
+.btn-gold {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--gold); color: var(--forest-deep);
+  font-weight: 600; font-size: 13.5px;
+  padding: 12px 22px; border-radius: 7px; border: none; cursor: pointer;
+  transition: background .15s, transform .15s, box-shadow .15s;
+  box-shadow: var(--sh-gold);
+}
+.btn-gold:hover { background: var(--gold-lt); transform: translateY(-2px); box-shadow: 0 6px 22px rgba(201,168,76,0.45); }
+
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: transparent; color: rgba(255,255,255,0.78);
+  font-weight: 400; font-size: 13.5px;
+  padding: 11px 20px; border-radius: 7px;
+  border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Trust row — tabular numerals */
+.hero-trust { display: flex; flex-wrap: wrap; }
+.trust-item {
+  padding: 0 22px;
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+.trust-item:first-child { padding-left: 0; }
+.trust-item:last-child { border-right: none; }
+.trust-num {
+  font-family: var(--font-d);
+  font-size: 30px; font-weight: 700; color: var(--gold);
+  line-height: 1; font-variant-numeric: tabular-nums;
+}
+.trust-lbl {
+  font-size: 10.5px; font-weight: 500;
+  color: rgba(255,255,255,0.38);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-top: 3px;
+}
+
+/* Side card — frosted glass */
+.hero-sidecard {
+  background: rgba(255,255,255,0.055);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 20px; padding: 28px 24px;
+}
+.sc-title {
+  font-family: var(--font-d);
+  font-size: 20px; font-weight: 600;
+  color: var(--gold); margin-bottom: 4px;
+}
+.sc-sub { font-size: 12px; color: rgba(255,255,255,0.38); margin-bottom: 22px; }
+.sc-items { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+.sc-item { display: flex; align-items: center; gap: 9px; font-size: 13.5px; color: rgba(255,255,255,0.75); }
+.sc-check {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.32);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.sc-check svg { color: var(--gold); }
+.sc-btn {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  width: 100%;
+  background: var(--gold); color: var(--forest-deep);
+  font-weight: 600; font-size: 13.5px;
+  padding: 12px; border-radius: 7px; border: none; cursor: pointer;
+  transition: background .15s;
+}
+.sc-btn:hover { background: var(--gold-lt); }
+.sc-note { text-align: center; font-size: 11px; color: rgba(255,255,255,0.28); margin-top: 9px; }
+
+/* ─── STATS BAND ──────────────────────────────────────────────────────────── */
+.stats-band {
+  background: var(--gold); padding: 18px 0;
+}
+.stats-inner {
+  max-width: 1140px; margin-inline: auto; padding-inline: 24px;
+  display: flex; justify-content: space-around;
+  align-items: center; flex-wrap: wrap; gap: 14px;
+}
+.st-item { display: flex; align-items: center; gap: 12px; }
+.st-div { width: 1px; height: 30px; background: rgba(4,58,0,0.18); }
+.st-num {
+  font-family: var(--font-d);
+  font-size: 30px; font-weight: 700;
+  color: var(--forest-deep); line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.st-lbl {
+  font-size: 10.5px; font-weight: 600;
+  color: rgba(4,58,0,0.58);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  max-width: 100px; line-height: 1.3;
+}
+
+/* ─── SECTION BASE ────────────────────────────────────────────────────────── */
+.section    { padding: 96px 24px; background: var(--bg); }
+.section-alt{ padding: 96px 24px; background: var(--bg-alt); }
+.section-dk { padding: 96px 24px; background: var(--forest); }
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-size: 10.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--gold-dk); margin-bottom: 12px;
+}
+.eyebrow::before { content: ''; width: 22px; height: 1.5px; background: var(--gold); flex-shrink: 0; }
+.eyebrow-lt { color: var(--gold-lt); }
+.eyebrow-lt::before { background: var(--gold-lt); }
+.eyebrow-c { justify-content: center; }
+
+.sh {
+  font-family: var(--font-d);
+  font-size: clamp(26px, 3.5vw, 44px); font-weight: 700;
+  color: var(--text); line-height: 1.14;
+  letter-spacing: -0.02em; text-wrap: balance; margin-bottom: 14px;
+}
+.sh-lt { color: #fff; }
+.sh em { font-style: italic; color: var(--gold-dk); }
+.sh-lt em { color: var(--gold); }
+.sh-c { text-align: center; }
+
+.body-copy {
+  font-size: 15.5px; font-weight: 300; line-height: 1.78;
+  color: var(--text-2); max-width: 560px;
+}
+.body-copy-lt { color: rgba(255,255,255,0.55); }
+.body-copy-c { margin-inline: auto; text-align: center; }
+
+/* ─── ABOUT ────────────────────────────────────────────────────────────────  */
+.about-grid {
+  max-width: 1140px; margin-inline: auto;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 76px; align-items: center;
+}
+@media (max-width: 800px) { .about-grid { grid-template-columns: 1fr; gap: 44px; } }
+
+.about-visual { position: relative; padding-bottom: 28px; }
+.about-card {
+  background: var(--forest);
+  border-radius: 20px; padding: 38px 34px;
+  border-top: 2px solid var(--gold-dk);
+  position: relative;
+}
+.about-quote {
+  font-family: var(--font-d);
+  font-size: 20px; font-style: italic; font-weight: 500;
+  color: rgba(255,255,255,0.88); line-height: 1.56; margin-bottom: 16px;
+}
+.about-attr { font-size: 12px; font-weight: 500; color: var(--gold); letter-spacing: 0.04em; }
+.about-badge {
+  position: absolute; bottom: -14px; right: 24px;
+  background: var(--gold); border-radius: 12px;
+  padding: 12px 18px;
+  box-shadow: 0 6px 22px rgba(201,168,76,0.38);
+}
+.ab-num {
+  font-family: var(--font-d);
+  font-size: 27px; font-weight: 700; color: var(--forest-deep); line-height: 1;
+}
+.ab-lbl {
+  font-size: 9.5px; font-weight: 600; color: rgba(4,58,0,0.58);
+  text-transform: uppercase; letter-spacing: 0.07em; margin-top: 2px;
+}
+
+.about-checks {
+  display: flex; flex-direction: column; gap: 11px;
+  margin: 26px 0 32px;
+}
+.about-check { display: flex; align-items: center; gap: 10px; font-size: 14.5px; font-weight: 400; color: var(--text); }
+.ac-icon {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: rgba(4,58,0,0.07); border: 1.5px solid rgba(4,58,0,0.16);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.ac-icon svg { color: var(--forest); }
+
+.partner-strip {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--bg-alt); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 20px;
+}
+.ps-num {
+  font-family: var(--font-d);
+  font-size: 36px; font-weight: 700; color: var(--forest); line-height: 1;
+}
+.ps-text { font-size: 13.5px; font-weight: 300; color: var(--text-2); line-height: 1.5; }
+
+/* ─── BENTO GRID (WM-style) ───────────────────────────────────────────────── */
+.bento {
+  max-width: 1140px; margin-inline: auto; margin-top: 52px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+@media (max-width: 860px) { .bento { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .bento { grid-template-columns: 1fr; } }
+
+.bc {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  padding: 28px 24px;
+  position: relative; overflow: hidden;
+  transition: box-shadow .22s, transform .22s, border-color .22s;
+}
+/* WM repeating gradient — only shows on hover */
+.bc::after {
+  content: '';
+  position: absolute; inset: 0; border-radius: var(--r-card);
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(201,168,76,0.03) 0px, rgba(201,168,76,0.03) 1px,
+    transparent 1px, transparent 9px
+  );
+  opacity: 0; transition: opacity .22s; pointer-events: none;
+}
+.bc:hover {
+  box-shadow: var(--sh-hover);
+  transform: translateY(-3px);
+  border-color: rgba(201,168,76,0.28);
+}
+.bc:hover::after { opacity: 1; }
+
+/* WM icon box — the distinctive detail */
+.bc-icon-bg {
+  display: inline-flex; border-radius: 10px;
+  background: rgba(4,58,0,0.07);
+  padding: 1px; margin-bottom: 18px;
+}
+.bc-icon {
+  width: 40px; height: 40px; border-radius: var(--r-icon);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg); box-shadow: var(--sh-icon);
+}
+.bc-icon svg { color: var(--forest); }
+
+.bc-name {
+  font-family: var(--font-d);
+  font-size: 20px; font-weight: 600; color: var(--text);
+  margin-bottom: 8px; letter-spacing: -0.01em;
+}
+.bc-desc {
+  font-size: 13.5px; font-weight: 300; line-height: 1.72;
+  color: var(--text-2); margin-bottom: 16px;
+}
+/* WM-style pill tag */
+.bc-tag {
+  display: inline-flex; align-items: center;
+  background: rgba(4,58,0,0.06); border: 1px solid rgba(4,58,0,0.1);
+  border-radius: 100px; padding: 2px 10px;
+  font-size: 10.5px; font-weight: 600;
+  color: var(--forest-mid); letter-spacing: 0.04em;
+}
+.bc-link {
+  display: inline-flex; align-items: center; gap: 4px; margin-top: 14px;
+  font-size: 12.5px; font-weight: 600; color: var(--forest);
+  transition: gap .15s;
+}
+.bc:hover .bc-link { gap: 8px; }
+
+/* Investment card — 2-col span, dark */
+@media (min-width: 860px) { .bc-invest { grid-column: span 2; } }
+.bc-invest {
+  background: var(--forest); border-color: rgba(201,168,76,0.2);
+}
+.bc-invest::after {
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(201,168,76,0.05) 0px, rgba(201,168,76,0.05) 1px,
+    transparent 1px, transparent 9px
+  );
+  opacity: 1;
+}
+.bc-invest .bc-icon-bg { background: rgba(201,168,76,0.1); }
+.bc-invest .bc-icon { background: rgba(255,255,255,0.06); box-shadow: none; }
+.bc-invest .bc-icon svg { color: var(--gold); }
+.bc-invest .bc-name { color: #fff; }
+.bc-invest .bc-desc { color: rgba(255,255,255,0.58); }
+.bc-invest .bc-link { color: var(--gold); }
+.bc-invest:hover { box-shadow: 0 10px 32px rgba(0,0,0,0.35); border-color: rgba(201,168,76,0.38); }
+
+.invest-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.it {
+  background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.28);
+  color: var(--gold-lt); font-size: 11px; font-weight: 600;
+  padding: 3px 11px; border-radius: 100px; letter-spacing: 0.05em;
+}
+
+/* ─── BENEFITS ───────────────────────────────────────────────────────────── */
+.benefits-grid {
+  max-width: 1140px; margin-inline: auto; margin-top: 52px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+}
+@media (max-width: 860px) { .benefits-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .benefits-grid { grid-template-columns: 1fr; } }
+
+.bp {
+  border: 1px solid rgba(201,168,76,0.14); border-radius: 20px;
+  padding: 26px 22px; background: rgba(255,255,255,0.04);
+}
+.bp-title {
+  font-family: var(--font-d);
+  font-size: 16px; font-weight: 600; color: var(--gold);
+  margin-bottom: 14px; padding-bottom: 12px;
+  border-bottom: 1px solid rgba(201,168,76,0.16);
+}
+.bp-items { display: flex; flex-direction: column; gap: 9px; }
+.bp-item {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 13px; color: rgba(255,255,255,0.68); line-height: 1.45;
+}
+.bp-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--gold); flex-shrink: 0; margin-top: 5px;
+}
+
+/* ─── WHY CHOOSE US ──────────────────────────────────────────────────────── */
+.why-grid {
+  max-width: 1140px; margin-inline: auto; margin-top: 52px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+@media (max-width: 680px) { .why-grid { grid-template-columns: 1fr; } }
+
+.wc {
+  border: 1px solid var(--border); border-radius: 20px;
+  padding: 32px 26px;
+  transition: border-color .2s, box-shadow .2s;
+}
+.wc:hover { border-color: rgba(201,168,76,0.3); box-shadow: var(--sh-hover); }
+
+.wc-icon-bg {
+  display: inline-flex; border-radius: 10px;
+  background: rgba(4,58,0,0.07); padding: 1px; margin-bottom: 18px;
+}
+.wc-icon {
+  width: 44px; height: 44px; border-radius: var(--r-icon);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg); box-shadow: var(--sh-icon);
+}
+.wc-icon svg { color: var(--forest); }
+
+.wc-tag {
+  display: inline-flex;
+  background: rgba(4,58,0,0.06); border: 1px solid rgba(4,58,0,0.1);
+  border-radius: 100px; padding: 2px 10px;
+  font-size: 10px; font-weight: 600;
+  color: var(--forest-mid); letter-spacing: 0.04em;
+  margin-bottom: 11px;
+}
+.wc-name {
+  font-family: var(--font-d);
+  font-size: 21px; font-weight: 600; color: var(--text);
+  margin-bottom: 9px;
+}
+.wc-desc {
+  font-size: 13.5px; font-weight: 300; line-height: 1.75; color: var(--text-2);
+}
+
+/* ─── TESTIMONIALS (WM heading+quote format) ──────────────────────────────── */
+.testimonials-grid {
+  max-width: 1140px; margin-inline: auto; margin-top: 52px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+}
+@media (max-width: 860px) { .testimonials-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .testimonials-grid { grid-template-columns: 1fr; } }
+
+.tc {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 20px; padding: 24px 22px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.tc-stars { color: var(--gold); font-size: 12.5px; letter-spacing: 2px; }
+.tc-heading {
+  font-family: var(--font-d);
+  font-size: 17px; font-weight: 600; font-style: italic;
+  color: var(--text); line-height: 1.25;
+}
+.tc-quote {
+  font-size: 13.5px; font-weight: 300; line-height: 1.75;
+  color: var(--text-2); flex: 1;
+}
+.tc-author {
+  display: flex; align-items: center; gap: 10px;
+  padding-top: 11px; border-top: 1px solid var(--border);
+}
+.tc-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--forest); display: flex; align-items: center;
+  justify-content: center; font-size: 11.5px; font-weight: 600;
+  color: var(--gold); flex-shrink: 0;
+}
+.tc-name {
+  font-family: var(--font-d);
+  font-size: 14px; font-weight: 600; color: var(--text);
+}
+.tc-role { font-size: 11px; color: var(--text-3); }
+
+/* CTA testimonial card */
+.tc-cta {
+  background: var(--forest-mid);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 20px; padding: 24px 22px;
+  display: flex; flex-direction: column;
+}
+.tc-cta-mark {
+  font-family: var(--font-d);
+  font-size: 68px; color: var(--gold);
+  line-height: 0.9; margin-bottom: 10px;
+}
+.tc-cta-text {
+  font-family: var(--font-d);
+  font-size: 20px; font-style: italic;
+  color: #fff; line-height: 1.42; flex: 1; margin-bottom: 22px;
+}
+
+/* ─── CTA BAND ───────────────────────────────────────────────────────────── */
+.cta-band {
+  background: var(--ember); padding: 60px 24px;
+  position: relative; overflow: hidden;
+}
+.cta-band::before {
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    45deg, transparent, transparent 30px,
+    rgba(255,255,255,0.02) 30px, rgba(255,255,255,0.02) 31px
+  );
+}
+.cta-inner {
+  max-width: 1140px; margin-inline: auto;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 28px; flex-wrap: wrap; position: relative; z-index: 1;
+}
+.cta-h {
+  font-family: var(--font-d);
+  font-size: clamp(22px, 3vw, 38px); font-weight: 700;
+  color: #fff; text-wrap: balance; margin-bottom: 6px;
+}
+.cta-sub { font-size: 15px; font-weight: 300; color: rgba(255,255,255,0.7); }
+.btn-white {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: #fff; color: var(--ember);
+  font-weight: 700; font-size: 13.5px;
+  padding: 12px 22px; border-radius: 7px; border: none; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  transition: transform .15s, box-shadow .15s; white-space: nowrap;
+}
+.btn-white:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,0.25); }
+
+/* ─── FORM ───────────────────────────────────────────────────────────────── */
+.form-card {
+  max-width: 700px; margin-inline: auto; margin-top: 44px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 24px; padding: 40px 36px;
+}
+@media (max-width: 540px) { .form-card { padding: 28px 20px; } }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+@media (max-width: 540px) { .form-row { grid-template-columns: 1fr; } }
+
+.fg { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+.fl {
+  font-size: 10.5px; font-weight: 600;
+  color: var(--text-2); text-transform: uppercase; letter-spacing: 0.09em;
+}
+.fi, .fs, .fta {
+  width: 100%; padding: 10px 13px;
+  border: 1.5px solid var(--border); border-radius: 7px;
+  font-family: var(--font-b); font-size: 13.5px;
+  color: var(--text); background: var(--bg);
+  transition: border-color .15s; outline: none;
+}
+.fi:focus, .fs:focus, .fta:focus { border-color: var(--forest); }
+.fta { resize: vertical; min-height: 96px; }
+.f-submit {
+  width: 100%; background: var(--forest); color: #fff;
+  font-weight: 600; font-size: 13.5px; font-family: var(--font-b);
+  padding: 13px; border-radius: 7px; border: none; cursor: pointer;
+  transition: background .15s;
+}
+.f-submit:hover { background: var(--forest-mid); }
+.f-note { text-align: center; font-size: 11.5px; color: var(--text-3); margin-top: 10px; }
+
+/* ─── FOOTER ──────────────────────────────────────────────────────────────── */
+footer {
+  background: var(--forest-deep);
+  padding: 70px 24px 0;
+  border-top: 2px solid var(--gold-dk);
+}
+.footer-grid {
+  max-width: 1140px; margin-inline: auto;
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
+  padding-bottom: 52px; border-bottom: 1px solid rgba(201,168,76,0.1);
+}
+@media (max-width: 860px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .footer-grid { grid-template-columns: 1fr; } }
+
+.f-logo { font-family: var(--font-d); font-size: 20px; font-weight: 600; color: var(--gold); margin-bottom: 11px; }
+.f-desc { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.42); line-height: 1.75; margin-bottom: 20px; }
+.f-contact { display: flex; flex-direction: column; gap: 9px; }
+.f-ci { display: flex; align-items: center; gap: 7px; font-size: 13px; color: rgba(255,255,255,0.48); }
+.f-ci svg { color: var(--gold); flex-shrink: 0; }
+.f-ci a { color: rgba(255,255,255,0.48); transition: color .15s; }
+.f-ci a:hover { color: var(--gold); }
+
+.f-col-h { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--gold); margin-bottom: 16px; }
+.f-links { display: flex; flex-direction: column; gap: 9px; }
+.f-links a { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.48); transition: color .15s; line-height: 1; }
+.f-links a:hover { color: var(--gold); }
+
+.footer-bottom {
+  max-width: 1140px; margin-inline: auto; padding: 18px 0;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+}
+.f-copy { font-size: 12px; color: rgba(255,255,255,0.26); }
+.f-power { font-size: 11.5px; color: rgba(255,255,255,0.2); }
+.f-power a { color: rgba(201,168,76,0.42); transition: color .15s; }
+.f-power a:hover { color: var(--gold); }
+</style>
+
+<!-- ── TOP BAR ─────────────────────────────────────────────────────────── -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <div class="tb-item">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.42 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.85a16 16 0 0 0 6.29 6.29l.95-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <a href="tel:+14169194593">+1 (416) 919-4593</a>
+      </div>
+      <div class="tb-item">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Mississauga, ON
+      </div>
+      <div class="tb-item">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Mon–Fri &nbsp;9 AM – 5 PM
+      </div>
+    </div>
+    <div class="topbar-social">
+      <a href="#">Facebook</a>
+      <a href="#">Instagram</a>
+      <a href="#">YouTube</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── NAV ──────────────────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-brand">
+      <span class="nav-brand-name">Meet My Advisor</span>
+      <span class="nav-brand-sub">Insurance &amp; Investment</span>
+    </a>
+    <div class="nav-links">
+      <a href="#">Home</a>
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#appointment">Book</a>
+      <a href="#contact">Contact</a>
+      <a href="tel:+14169194593" class="nav-cta">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.42 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.85a16 16 0 0 0 6.29 6.29l.95-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Free Quote
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ──────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        <span class="hero-badge-text">25+ Years · CLU Designation</span>
+      </div>
+      <h1>Your <em>Trusted</em> Partner for Financial Protection</h1>
+      <p class="hero-sub">Comprehensive insurance and investment solutions for every stage of life. We compare 24+ Canadian carriers to find the coverage that actually fits you.</p>
+      <div class="hero-btns">
+        <a href="tel:+14169194593" class="btn-gold">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.42 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.85a16 16 0 0 0 6.29 6.29l.95-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Get a Free Quote
+        </a>
+        <a href="#services" class="btn-outline">Explore Services</a>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-item"><div class="trust-num">25+</div><div class="trust-lbl">Years Experience</div></div>
+        <div class="trust-item"><div class="trust-num">24+</div><div class="trust-lbl">Insurance Partners</div></div>
+        <div class="trust-item"><div class="trust-num">200+</div><div class="trust-lbl">Families Protected</div></div>
+        <div class="trust-item"><div class="trust-num">100%</div><div class="trust-lbl">Claims Success</div></div>
+      </div>
+    </div>
+
+    <div class="hero-sidecard">
+      <div class="sc-title">Free Consultation</div>
+      <div class="sc-sub">No obligation · Same-day response</div>
+      <div class="sc-items">
+        <div class="sc-item"><div class="sc-check"><svg width="9" height="9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><path d="M2 6L5 9L10 3"/></svg></div>Life &amp; Critical Illness Insurance</div>
+        <div class="sc-item"><div class="sc-check"><svg width="9" height="9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><path d="M2 6L5 9L10 3"/></svg></div>Estate &amp; Funeral Planning</div>
+        <div class="sc-item"><div class="sc-check"><svg width="9" height="9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><path d="M2 6L5 9L10 3"/></svg></div>Travel &amp; Disability Coverage</div>
+        <div class="sc-item"><div class="sc-check"><svg width="9" height="9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><path d="M2 6L5 9L10 3"/></svg></div>RESP · RRSP · TFSA · FHSA</div>
+        <div class="sc-item"><div class="sc-check"><svg width="9" height="9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><path d="M2 6L5 9L10 3"/></svg></div>Tailored to your family &amp; budget</div>
+      </div>
+      <a href="tel:+14169194593" class="sc-btn">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.42 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.85a16 16 0 0 0 6.29 6.29l.95-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Call +1 (416) 919-4593
+      </a>
+      <div class="sc-note">Respond within 2 hours</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS BAND ─────────────────────────────────────────────────────────── -->
+<div class="stats-band">
+  <div class="stats-inner">
+    <div class="st-item"><div class="st-num">25+</div><div class="st-lbl">Years Experience</div></div>
+    <div class="st-div"></div>
+    <div class="st-item"><div class="st-num">24+</div><div class="st-lbl">Insurance Companies</div></div>
+    <div class="st-div"></div>
+    <div class="st-item"><div class="st-num">200+</div><div class="st-lbl">Families Protected</div></div>
+    <div class="st-div"></div>
+    <div class="st-item"><div class="st-num">100%</div><div class="st-lbl">Successful Claims</div></div>
+    <div class="st-div"></div>
+    <div class="st-item"><div class="st-num">CLU</div><div class="st-lbl">Designation</div></div>
+  </div>
+</div>
+
+<!-- ── ABOUT ──────────────────────────────────────────────────────────────── -->
+<section class="section" id="about">
+  <div class="about-grid">
+    <div class="about-visual">
+      <div class="about-card">
+        <div class="about-quote">"The indispensable first step to getting the things you want out of life is this: decide what you want."</div>
+        <div class="about-attr">Ben Stein</div>
+      </div>
+      <div class="about-badge">
+        <div class="ab-num">24+</div>
+        <div class="ab-lbl">Partners</div>
+      </div>
+    </div>
+    <div>
+      <div class="eyebrow">About Meet My Advisor</div>
+      <h2 class="sh">Helping Lives Through Insurance &amp; <em>Investment Solutions</em></h2>
+      <p class="body-copy">We help lives stay secure with insurance and investment solutions designed for every stage of life. From your first policy to multi-generational estate planning, we bring 25+ years of experience and a CLU designation to every conversation.</p>
+      <div class="about-checks">
+        <div class="about-check"><div class="ac-icon"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><path d="M2 6L5 9L10 3"/></svg></div>Over 25 years of industry experience</div>
+        <div class="about-check"><div class="ac-icon"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><path d="M2 6L5 9L10 3"/></svg></div>200+ successfully executed client engagements</div>
+        <div class="about-check"><div class="ac-icon"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><path d="M2 6L5 9L10 3"/></svg></div>Tailored solutions for every family's unique situation</div>
+      </div>
+      <div class="partner-strip">
+        <div class="ps-num">24+</div>
+        <div class="ps-text">Partnered with over 24 of Canada's leading insurance companies, giving you more choice and better rates than any single-carrier advisor can offer.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SERVICES (BENTO GRID) ──────────────────────────────────────────────── -->
+<section class="section-alt" id="services">
+  <div class="w">
+    <div style="text-align:center;">
+      <div class="eyebrow eyebrow-c">Insurance &amp; Investment</div>
+      <h2 class="sh sh-c">Innovative Solutions for <em>Today &amp; Tomorrow</em></h2>
+      <p class="body-copy body-copy-c">From protecting your family today to building generational wealth. The full spectrum of coverage and investment options, in one place.</p>
+    </div>
+    <div class="bento">
+
+      <div class="bc">
+        <div class="bc-icon-bg"><div class="bc-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div></div>
+        <div class="bc-name">Life Insurance</div>
+        <p class="bc-desc">Protect your loved ones' financial future. Covers income replacement, outstanding debt, and provides long-term savings options if the unexpected happens.</p>
+        <div class="bc-tag">Family Protection</div>
+        <div class="bc-link">Learn more <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><path d="M2.5 6H9.5M6.5 3L9.5 6L6.5 9"/></svg></div>
+      </div>
+
+      <div class="bc">
+        <div class="bc-icon-bg"><div class="bc-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div></div>
+        <div class="bc-name">Critical Illness</div>
+        <p class="bc-desc">A lump-sum payout upon a serious diagnosis, giving you the financial freedom to focus entirely on recovery rather than bills.</p>
+        <div class="bc-tag">Medical Security</div>
+        <div class="bc-link">Learn more <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><path d="M2.5 6H9.5M6.5 3L9.5 6L6.5 9"/></svg></div>
+      </div>
+
+      <div class="bc">
+        <div class="bc-icon-bg"><div class="bc-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div></div>
+        <div class="bc-name">Estate Planning</div>
+        <p class="bc-desc">Ensure your assets transfer smoothly and your loved ones inherit without legal burden or unexpected tax complications.</p>
+        <div class="bc-tag">Wealth Transfer</div>
+        <div class="bc-link">Learn more <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><path d="M2.5 6H9.5M6.5 3L9.5 6L6.5 9"/></svg></div>
+      </div>
+
+      <!-- Investment — 2-col span -->
+      <div class="bc bc-invest">
+        <div class="bc-icon-bg"><div class="bc-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div></div>
+        <div class="bc-name">Investment Solutions</div>
+        <p class="bc-desc">Grow your wealth with Canada's most powerful registered programs. Up to $9,200 in government RESP grants, plus strategic RRSP, FHSA, and TFSA planning built around your goals and timeline.</p>
+        <div class="invest-tags">
+          <span class="it">RESP · Up to $9,200</span>
+          <span class="it">RRSP</span>
+          <span class="it">TFSA</span>
+          <span class="it">FHSA</span>
+        </div>
+        <div class="bc-link">Explore options <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><path d="M2.5 6H9.5M6.5 3L9.5 6L6.5 9"/></svg></div>
+      </div>
+
+      <div class="bc">
+        <div class="bc-icon-bg"><div class="bc-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div></div>
+        <div class="bc-name">Funeral Insurance</div>
+        <p class="bc-desc">Affordable premiums and quick claim processing so your family can focus on what matters rather than worrying about end-of-life costs.</p>
+        <div class="bc-tag">Final Expenses</div>
+        <div class="bc-link">Learn more <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><path d="M2.5 6H9.5M6.5 3L9.5 6L6.5 9"/></svg></div>
+      </div>
+
+      <div class="bc">
+        <div class="bc-icon-bg"><div class="bc-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div></div>
+        <div class="bc-name">Travel &amp; Disability</div>
+        <p class="bc-desc">Income protection if you can't work, plus comprehensive travel coverage for wherever life takes you.</p>
+        <div class="bc-tag">Income Protection</div>
+        <div class="bc-link">Learn more <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><path d="M2.5 6H9.5M6.5 3L9.5 6L6.5 9"/></svg></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── BENEFITS ───────────────────────────────────────────────────────────── -->
+<section class="section-dk">
+  <div class="w">
+    <div style="text-align:center;">
+      <div class="eyebrow eyebrow-lt eyebrow-c">Coverage Details</div>
+      <h2 class="sh sh-lt sh-c">What <em>Coverage</em> Means for Your Family</h2>
+      <p class="body-copy body-copy-lt body-copy-c">The right policy protects more than finances. It protects your family's future, dignity, and peace of mind.</p>
+    </div>
+    <div class="benefits-grid">
+      <div class="bp">
+        <div class="bp-title">Life Insurance</div>
+        <div class="bp-items">
+          <div class="bp-item"><div class="bp-dot"></div>Financial Protection for Family</div>
+          <div class="bp-item"><div class="bp-dot"></div>Income Replacement</div>
+          <div class="bp-item"><div class="bp-dot"></div>Debt Coverage</div>
+          <div class="bp-item"><div class="bp-dot"></div>Tax Benefits</div>
+          <div class="bp-item"><div class="bp-dot"></div>Peace of Mind</div>
+          <div class="bp-item"><div class="bp-dot"></div>Long-Term Savings Option</div>
+          <div class="bp-item"><div class="bp-dot"></div>Children's Future Security</div>
+        </div>
+      </div>
+      <div class="bp">
+        <div class="bp-title">Estate Planning</div>
+        <div class="bp-items">
+          <div class="bp-item"><div class="bp-dot"></div>Smooth Asset Transfer</div>
+          <div class="bp-item"><div class="bp-dot"></div>Wealth Protection</div>
+          <div class="bp-item"><div class="bp-dot"></div>Tax Planning</div>
+          <div class="bp-item"><div class="bp-dot"></div>Legacy Planning</div>
+          <div class="bp-item"><div class="bp-dot"></div>Peace of Mind</div>
+          <div class="bp-item"><div class="bp-dot"></div>Financial Stability for Beneficiaries</div>
+          <div class="bp-item"><div class="bp-dot"></div>Avoids Legal Complications</div>
+        </div>
+      </div>
+      <div class="bp">
+        <div class="bp-title">Funeral Insurance</div>
+        <div class="bp-items">
+          <div class="bp-item"><div class="bp-dot"></div>Dignified Farewell</div>
+          <div class="bp-item"><div class="bp-dot"></div>Simple Policy Options</div>
+          <div class="bp-item"><div class="bp-dot"></div>Affordable Premiums</div>
+          <div class="bp-item"><div class="bp-dot"></div>Quick Claim Processing</div>
+          <div class="bp-item"><div class="bp-dot"></div>Reduces Financial Burden</div>
+          <div class="bp-item"><div class="bp-dot"></div>Covers All Funeral Costs</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHY CHOOSE US ──────────────────────────────────────────────────────── -->
+<section class="section">
+  <div class="w">
+    <div style="text-align:center;">
+      <div class="eyebrow eyebrow-c">Why Choose Us</div>
+      <h2 class="sh sh-c">Secure Your Future with <em>Expert Guidance</em></h2>
+      <p class="body-copy body-copy-c">Personalized insurance solutions and advisors you can trust at every stage of life.</p>
+    </div>
+    <div class="why-grid">
+      <div class="wc">
+        <div class="wc-icon-bg"><div class="wc-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div></div>
+        <div class="wc-tag">25+ Years · CLU Designation</div>
+        <div class="wc-name">Trusted Expertise</div>
+        <p class="wc-desc">With 25 years in the industry and a CLU designation, our advisors bring the knowledge and care you deserve to every decision.</p>
+      </div>
+      <div class="wc">
+        <div class="wc-icon-bg"><div class="wc-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div></div>
+        <div class="wc-tag">Customized to You</div>
+        <div class="wc-name">Tailored Solutions</div>
+        <p class="wc-desc">Every plan is built around your unique needs, family circumstances, and long-term goals. No one-size-fits-all policies here.</p>
+      </div>
+      <div class="wc">
+        <div class="wc-icon-bg"><div class="wc-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div></div>
+        <div class="wc-tag">24+ Carriers Compared</div>
+        <div class="wc-name">Time &amp; Effort Savings</div>
+        <p class="wc-desc">We compare 24+ insurance providers on your behalf so you get the best coverage at the best price, without spending hours researching on your own.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ───────────────────────────────────────────────────────── -->
+<section class="section-dk">
+  <div class="w">
+    <div style="text-align:center;">
+      <div class="eyebrow eyebrow-lt eyebrow-c">Client Testimonials</div>
+      <h2 class="sh sh-lt sh-c">What Our <em>Clients</em> Say</h2>
+    </div>
+    <div class="testimonials-grid">
+
+      <div class="tc">
+        <div class="tc-stars">★★★★★</div>
+        <div class="tc-heading">"Helped our family find the right plan"</div>
+        <p class="tc-quote">Meet My Advisor helped me choose the right life insurance plan for my family. Their team explained everything clearly and made the whole process stress-free.</p>
+        <div class="tc-author">
+          <div class="tc-avatar">MT</div>
+          <div><div class="tc-name">Michael Thompson</div><div class="tc-role">Life Insurance Client</div></div>
+        </div>
+      </div>
+
+      <div class="tc">
+        <div class="tc-stars">★★★★★</div>
+        <div class="tc-heading">"Guided me step by step"</div>
+        <p class="tc-quote">I was confused about estate planning and insurance, but Meet My Advisor walked me through every detail. Now I have complete peace of mind knowing my family is protected.</p>
+        <div class="tc-author">
+          <div class="tc-avatar">RM</div>
+          <div><div class="tc-name">Ryan Mitchell</div><div class="tc-role">Estate Planning Client</div></div>
+        </div>
+      </div>
+
+      <div class="tc">
+        <div class="tc-stars">★★★★★</div>
+        <div class="tc-heading">"Great service from start to finish"</div>
+        <p class="tc-quote">I got a comprehensive package including life and funeral coverage. The service is exceptional. They actually listen to what you need and tailor every detail.</p>
+        <div class="tc-author">
+          <div class="tc-avatar">EJ</div>
+          <div><div class="tc-name">Emily Johnson</div><div class="tc-role">Comprehensive Coverage</div></div>
+        </div>
+      </div>
+
+      <div class="tc">
+        <div class="tc-stars">★★★★★</div>
+        <div class="tc-heading">"They really listen"</div>
+        <p class="tc-quote">They customized an insurance plan that protects both my business and my family. The advisors really take the time to understand what matters most to you.</p>
+        <div class="tc-author">
+          <div class="tc-avatar">DC</div>
+          <div><div class="tc-name">Daniel Carter</div><div class="tc-role">Business Protection Client</div></div>
+        </div>
+      </div>
+
+      <div class="tc">
+        <div class="tc-stars">★★★★★</div>
+        <div class="tc-heading">"Best coverage within my budget"</div>
+        <p class="tc-quote">Excellent service and great support. They found the best insurance package within my budget. I feel confident and protected for the future. Highly recommend.</p>
+        <div class="tc-author">
+          <div class="tc-avatar">OB</div>
+          <div><div class="tc-name">Olivia Bennett</div><div class="tc-role">New Client</div></div>
+        </div>
+      </div>
+
+      <div class="tc-cta">
+        <div class="tc-cta-mark">"</div>
+        <div class="tc-cta-text">Ready to protect what matters most to you?</div>
+        <a href="tel:+14169194593" class="btn-gold" style="width:100%;justify-content:center;">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.42 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.85a16 16 0 0 0 6.29 6.29l.95-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Book Free Consultation
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA BAND ───────────────────────────────────────────────────────────── -->
+<div class="cta-band">
+  <div class="cta-inner">
+    <div>
+      <h3 class="cta-h">Need Insurance Coverage? Let's Talk.</h3>
+      <p class="cta-sub">Our advisors are ready to answer your questions and find the right plan for you.</p>
+    </div>
+    <a href="tel:+14169194593" class="btn-white">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.42 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.85a16 16 0 0 0 6.29 6.29l.95-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      Request a Call Back
+    </a>
+  </div>
+</div>
+
+<!-- ── APPOINTMENT FORM ────────────────────────────────────────────────────── -->
+<section class="section-alt" id="appointment">
+  <div class="w">
+    <div style="text-align:center;">
+      <div class="eyebrow eyebrow-c">Book an Appointment</div>
+      <h2 class="sh sh-c">Get Personalized Financial <em>Guidance</em></h2>
+      <p class="body-copy body-copy-c">No-obligation consultation tailored to your situation. We respond within 2 business hours.</p>
+    </div>
+    <div class="form-card" id="contact">
+      <div class="form-row">
+        <div class="fg"><label class="fl">First Name</label><input class="fi" type="text" placeholder="John"></div>
+        <div class="fg"><label class="fl">Last Name</label><input class="fi" type="text" placeholder="Smith"></div>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label class="fl">Phone</label><input class="fi" type="tel" placeholder="+1 (416) 000-0000"></div>
+        <div class="fg"><label class="fl">Email</label><input class="fi" type="email" placeholder="john@example.com"></div>
+      </div>
+      <div class="fg">
+        <label class="fl">Service of Interest</label>
+        <select class="fs">
+          <option value="">Select a service…</option>
+          <option>Life Insurance</option>
+          <option>Critical Illness Insurance</option>
+          <option>Estate Planning Insurance</option>
+          <option>Funeral Insurance</option>
+          <option>Travel Insurance</option>
+          <option>Disability Insurance</option>
+          <option>Investment Solutions (RESP / RRSP / TFSA / FHSA)</option>
+          <option>Multiple / Not Sure</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="fl">Message (optional)</label>
+        <textarea class="fta" placeholder="Tell us about your situation and goals…"></textarea>
+      </div>
+      <button class="f-submit">Book My Free Appointment</button>
+      <p class="f-note">No obligation · We respond within 2 business hours</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="f-logo">Meet My Advisor</div>
+      <p class="f-desc">A trusted insurance consultation firm helping individuals and families across Canada choose the right coverage, with expert guidance you can rely on for life.</p>
+      <div class="f-contact">
+        <div class="f-ci"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.42 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.85a16 16 0 0 0 6.29 6.29l.95-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><a href="tel:+14169194593">+1 (416) 919-4593</a></div>
+        <div class="f-ci"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Mississauga, ON</div>
+        <div class="f-ci"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Mon–Fri &nbsp;9:00 AM – 5:00 PM</div>
+      </div>
+    </div>
+    <div>
+      <div class="f-col-h">Quick Links</div>
+      <div class="f-links">
+        <a href="#">Home</a><a href="#about">About Us</a>
+        <a href="#services">Services</a><a href="#">Education Center</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+    <div>
+      <div class="f-col-h">Insurance</div>
+      <div class="f-links">
+        <a href="#services">Life Insurance</a>
+        <a href="#services">Critical Illness</a>
+        <a href="#services">Estate Planning</a>
+        <a href="#services">Funeral Insurance</a>
+        <a href="#services">Travel Insurance</a>
+        <a href="#services">Disability</a>
+      </div>
+    </div>
+    <div>
+      <div class="f-col-h">Investments</div>
+      <div class="f-links">
+        <a href="#services">RESP · Up to $9,200</a>
+        <a href="#services">RRSP</a><a href="#services">TFSA</a>
+        <a href="#services">FHSA</a>
+      </div>
+      <div style="margin-top:22px">
+        <div class="f-col-h">Follow Us</div>
+        <div class="f-links">
+          <a href="#">Facebook</a><a href="#">Instagram</a><a href="#">YouTube</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="f-copy">© 2026 Meet My Advisor. All Rights Reserved. &nbsp;·&nbsp; Privacy Policy &nbsp;·&nbsp; Terms</span>
+    <span class="f-power">Website powered by <a href="mailto:northstardigitalinc@gmail.com">northstardigitalinc@gmail.com</a></span>
+  </div>
+</footer>
