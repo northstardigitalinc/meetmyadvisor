@@ -571,8 +571,7 @@ footer {
 }
 
 /* ── SCROLL REVEAL ANIMATIONS ────────────── */
-/* Hidden state before reveal */
-.anim-hidden { opacity: 0; }
+/* anim-hidden no longer used — content always visible, animations are additive */
 
 /* Keyframes matching Elementor's animation library */
 @keyframes fadeIn      { from { opacity: 0; } to { opacity: 1; } }
@@ -590,7 +589,6 @@ footer {
 .anim-running.anim-zoomIn      { animation: zoomIn      0.6s ease both; }
 
 @media (prefers-reduced-motion: reduce) {
-  .anim-hidden { opacity: 1; }
   [class*="anim-running"] { animation: none !important; }
 }
 
