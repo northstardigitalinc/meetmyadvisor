@@ -174,28 +174,47 @@
 /* ── Scroll Reveal Animations (fadeInLeft/Up/Right/fadeIn) ── */
 (function () {
   var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReduced) return;
 
   var animEls = document.querySelectorAll('[data-anim]');
   if (!animEls.length) return;
 
-  var revealObs = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        var el = entry.target;
-        var anim = el.dataset.anim || 'fadeInUp';
-        var delay = el.dataset.animDelay || '0';
-        el.style.animationDelay = delay + 'ms';
-        el.classList.add('anim-' + anim, 'anim-running');
-        revealObs.unobserve(el);
-      }
-    });
-  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  function revealEl(el) {
+    if (el.classList.contains('anim-hidden')) {
+      var anim = el.dataset.anim || 'fadeInUp';
+      var delay = el.dataset.animDelay || '0';
+      el.style.animationDelay = prefersReduced ? '0ms' : delay + 'ms';
+      el.classList.remove('anim-hidden');
+      if (!prefersReduced) el.classList.add('anim-' + anim, 'anim-running');
+    }
+  }
 
+  function checkInView() {
+    document.querySelectorAll('.anim-hidden').forEach(function (el) {
+      var rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight + 40) revealEl(el);
+    });
+  }
+
+  // Only hide elements that are genuinely below the fold
   animEls.forEach(function (el) {
-    el.classList.add('anim-hidden');
-    revealObs.observe(el);
+    var rect = el.getBoundingClientRect();
+    if (rect.top > window.innerHeight) el.classList.add('anim-hidden');
   });
+
+  // IntersectionObserver as primary trigger
+  if ('IntersectionObserver' in window) {
+    var revealObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { revealEl(entry.target); revealObs.unobserve(entry.target); }
+      });
+    }, { threshold: 0, rootMargin: '0px 0px 40px 0px' });
+    document.querySelectorAll('.anim-hidden').forEach(function (el) { revealObs.observe(el); });
+  }
+
+  // Scroll + load fallback
+  window.addEventListener('scroll', checkInView, { passive: true });
+  window.addEventListener('load', checkInView);
+  setTimeout(checkInView, 300);
 })();
 
 /* ── Partner Logos Marquee (infinite scroll) ── */
