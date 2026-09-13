@@ -1,15 +1,15 @@
 /* ========================================
-   MEET MY ADVISOR - Main Stylesheet
-   Colors: #005DAA (blue), #FFD200 (yellow)
+   REVIEW LIFE FINANCIAL - Main Stylesheet
+   Colors: #043a00 (dark green), #fdd33d (gold)
    Fonts: Archivo (body), Mulish (headings)
    ======================================== */
 
 :root {
-  --blue:       #005DAA;
-  --blue-dark:  #003d7a;
-  --blue-light: #e8f1fb;
-  --yellow:     #FFD200;
-  --yellow-dark:#e0b800;
+  --blue:       #043a00;
+  --blue-dark:  #022200;
+  --blue-light: #e6f0e6;
+  --yellow:     #fdd33d;
+  --yellow-dark:#e6be2a;
   --text:       #7a7a7a;
   --dark:       #1e1e1e;
   --white:      #ffffff;
@@ -228,7 +228,7 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--font-head); color: var(--dark); line-heig
   text-align: center;
   transition: box-shadow .2s;
 }
-.feature-card:hover { box-shadow: 0 8px 32px rgba(0,93,170,0.1); }
+.feature-card:hover { box-shadow: 0 8px 32px rgba(4,58,0,0.1); }
 .feature-icon { width: 80px; height: 80px; margin: 0 auto 22px; }
 .feature-icon img { width: 100%; height: 100%; object-fit: contain; }
 .feature-card h3 { font-family: var(--font-head); font-size: 20px; color: var(--blue); margin-bottom: 14px; font-weight: 700; }
@@ -255,7 +255,7 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--font-head); color: var(--dark); line-heig
 .about-section { background: var(--white); }
 .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
 .about-images { position: relative; }
-.about-img-main { border-radius: 8px; width: 85%; box-shadow: 0 12px 40px rgba(0,93,170,0.15); }
+.about-img-main { border-radius: 8px; width: 85%; box-shadow: 0 12px 40px rgba(4,58,0,0.15); }
 .about-img-badge {
   position: absolute; bottom: -20px; right: 0;
   background: var(--yellow);
@@ -276,7 +276,7 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--font-head); color: var(--dark); line-heig
 .check-icon svg { width: 11px; height: 11px; fill: #fff; }
 .partner-badge {
   display: inline-flex; align-items: center; gap: 14px;
-  background: var(--blue-light); border: 1px solid rgba(0,93,170,0.2);
+  background: var(--blue-light); border: 1px solid rgba(4,58,0,0.2);
   border-radius: 6px; padding: 16px 22px; margin-top: 24px;
 }
 .partner-badge-num { font-family: var(--font-head); font-size: 36px; font-weight: 900; color: var(--blue); line-height: 1; }
@@ -297,7 +297,7 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--font-head); color: var(--dark); line-heig
   box-shadow: 0 2px 12px rgba(0,0,0,0.07);
   transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
-.service-card:hover { box-shadow: 0 10px 36px rgba(0,93,170,0.16); transform: translateY(-5px); }
+.service-card:hover { box-shadow: 0 10px 36px rgba(4,58,0,0.16); transform: translateY(-5px); }
 .service-card-img { position: relative; overflow: hidden; aspect-ratio: 4 / 3; }
 .service-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
 .service-card:hover .service-card-img img { transform: scale(1.05); }
@@ -359,7 +359,7 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--font-head); color: var(--dark); line-heig
   border-top: 4px solid var(--blue);
   transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
-.why-card:hover { box-shadow: 0 10px 32px rgba(0,93,170,0.12); transform: translateY(-5px); }
+.why-card:hover { box-shadow: 0 10px 32px rgba(4,58,0,0.12); transform: translateY(-5px); }
 .why-icon { width: 70px; height: 70px; margin: 0 auto 20px; }
 .why-icon img { width: 100%; height: 100%; object-fit: contain; }
 .why-card h3 { font-family: var(--font-head); font-size: 18px; color: var(--blue); margin-bottom: 12px; }
@@ -652,7 +652,7 @@ footer {
 
 /* ── FEATURE CARD hover ──────────────────── */
 .feature-card { transition: box-shadow 0.3s ease, transform 0.3s ease; }
-.feature-card:hover { box-shadow: 0 10px 36px rgba(0,93,170,0.12); transform: translateY(-4px); }
+.feature-card:hover { box-shadow: 0 10px 36px rgba(4,58,0,0.12); transform: translateY(-4px); }
 .feature-card .feature-icon img { transition: transform 0.4s ease; }
 .feature-card:hover .feature-icon img { transform: scale(1.1) rotate(-3deg); }
 
