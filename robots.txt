@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://northstardigitalinc.github.io/meetmyadvisor-clone/sitemap.xml
